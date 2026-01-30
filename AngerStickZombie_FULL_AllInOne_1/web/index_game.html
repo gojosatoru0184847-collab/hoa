@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AOSZ HTML FULL</title>
+<style>
+html,body{margin:0;height:100%;background:#000;color:#fff}
+canvas{width:100%;height:100%;display:block}
+#hud{position:absolute;top:10px;left:10px;background:rgba(0,0,0,.5);padding:8px;border-radius:8px}
+</style>
+</head>
+<body>
+<canvas id="cv" width="1280" height="720"></canvas>
+<div id="hud">Gold: <span id="g">100</span> | Mana: <span id="m">25</span> | Wave: <span id="w">1</span></div>
+
+<script>
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+const gEl=document.getElementById('g'),mEl=document.getElementById('m'),wEl=document.getElementById('w');
+
+const bgm=new Audio('bgm.mp3'); bgm.loop=true; bgm.volume=.6;
+const sfx=new Audio('punch.mp3');
+
+let gold=100,mana=25,wave=1;
+let hero={x:cv.width*.2,y:cv.height*.7,r:18,hp:260};
+let mobs=[];
+
+function spawnZombie(){
+ mobs.push({x:cv.width*.95,y:cv.height*(.2+Math.random()*.6),r:12,hp:80+wave*4});
+}
+
+for(let i=0;i<3;i++)spawnZombie();
+
+cv.onclick=e=>{
+ if(gold>=25){
+  gold-=25;
+  sfx.cloneNode().play();
+ }
+};
+
+function loop(){
+ ctx.fillStyle='black';ctx.fillRect(0,0,cv.width,cv.height);
+ ctx.fillStyle='#2ef2a3';
+ ctx.beginPath();ctx.arc(hero.x,hero.y,hero.r,0,Math.PI*2);ctx.fill();
+
+ mobs.forEach(z=>{
+  z.x-=.8;
+  ctx.fillStyle='#ff5c7a';
+  ctx.beginPath();ctx.arc(z.x,z.y,z.r,0,Math.PI*2);ctx.fill();
+ });
+
+ gold+=.05; mana+=.02;
+
+ gEl.textContent=Math.floor(gold);
+ mEl.textContent=Math.floor(mana);
+ wEl.textContent=wave;
+
+ requestAnimationFrame(loop);
+}
+
+bgm.play().catch(()=>{});
+loop();
+</script>
+</body>
+</html>

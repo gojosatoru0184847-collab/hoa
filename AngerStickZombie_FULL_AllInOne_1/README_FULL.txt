@@ -1,0 +1,1 @@
+FULL VERSION: Android Pro + HTML Full Game\nOpen web/index.html to play HTML demo.\n
